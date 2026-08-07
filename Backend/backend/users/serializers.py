@@ -21,7 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data["username"],
             email=validated_data["email"],
             password=validated_data["password"],
-            target_role=validated_data["target_role"]
+            target_role=validated_data["target_role"],
             github=validated_data["github"],
             linkedin=validated_data["linkedin"],
 

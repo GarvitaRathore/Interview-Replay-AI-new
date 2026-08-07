@@ -27,9 +27,9 @@ class InterviewSession(models.Model):
     interview_type=models.CharField(max_length=20,choices=interview_types)
     experience=models.CharField(max_length=20,choices=experience_levels)
     difficulty=models.CharField(max_length=20,choices=difficulty_levels)
-    status=models.CharField(max_length=20,choices=status_types)
+    status=models.CharField(max_length=20,choices=status_types,default="PENDING")
     topic=models.CharField(max_length=100,blank=True)
-    number_of_questions=models.PositiveIntegerField(max_length=100,blank=True)
+    number_of_questions=models.PositiveIntegerField()
     created_at=models.DateField(auto_now_add=True)
 class Question(models.Model):
     interview=models.ForeignKey(InterviewSession,on_delete=models.CASCADE,related_name="questions")
@@ -40,10 +40,13 @@ class Question(models.Model):
     def __str__(self):
         return f"Question {self.question_order}"
 class UserAnswer(models.Model):
-    question=models.OneToOneField(Question,on_delete=models.CASCADE,related_name="answers")
+    question=models.OneToOneField(Question,on_delete=models.CASCADE,related_name="answer")
     user_answer=models.TextField(blank=True)
-    score=models.PositiveIntegerField(blank=True)
-    feedback=models.TextField(blank=True)
+    score=models.PositiveIntegerField(blank=True,null=True)
+    feedback=models.TextField(blank=True,default="")
+    duration=models.FloatField(null=True,blank=True)
+    words_per_minute=models.FloatField(null=True,blank=True)
+    filler_words=models.PositiveIntegerField(default=0)
     created_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Answer to the Question {self.question.question_order}"

@@ -6,5 +6,6 @@ class User(AbstractUser):
     github=models.URLField(blank=True)
     linkedin=models.URLField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
+    is_verified=models.BooleanField(default=False)
     def __str__(self):
         return self.username

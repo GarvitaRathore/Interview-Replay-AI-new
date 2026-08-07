@@ -1,0 +1,115 @@
+/* AppNavbar.css */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+--bg:#FFF7F5;
+--surface:#FFFFFF;
+--pink-soft:#FBE0E6;
+--pink-mid:#F3A9BC;
+--pink-strong:#E4638A;
+--ink:#2B2230;
+--ink-soft:#8A7B82;
+--line:#F3DCE1;
+}
+
+.app-navbar{
+position:sticky;
+top:0;
+z-index:1000;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 6%;
+background:rgba(255,247,245,.9);
+backdrop-filter:blur(12px);
+border-bottom:1px solid var(--line);
+}
+
+.app-logo{
+display:flex;
+align-items:center;
+gap:14px;
+text-decoration:none;
+}
+
+.app-logo .logo-circle{
+width:44px;
+height:44px;
+border-radius:50%;
+background:var(--pink-strong);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-weight:700;
+font-size:17px;
+font-family:'Fraunces',serif;
+flex-shrink:0;
+}
+
+.app-logo h2{
+font-family:'Fraunces',serif;
+font-weight:600;
+font-size:17px;
+color:var(--ink);
+}
+
+.app-logo p{
+font-family:'Inter',sans-serif;
+font-size:12px;
+color:var(--ink-soft);
+}
+
+.app-nav-links{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.app-nav-link{
+font-family:'Inter',sans-serif;
+font-size:14px;
+font-weight:600;
+color:var(--ink-soft);
+text-decoration:none;
+padding:9px 16px;
+border-radius:30px;
+transition:.25s;
+}
+
+.app-nav-link:hover{
+color:var(--pink-strong);
+background:var(--pink-soft);
+}
+
+.app-nav-link.active{
+color:var(--pink-strong);
+background:var(--pink-soft);
+}
+
+.app-logout-btn{
+margin-left:8px;
+padding:9px 20px;
+border-radius:30px;
+border:1.5px solid var(--pink-strong);
+background:white;
+color:var(--pink-strong);
+font-family:'Inter',sans-serif;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
+}
+
+.app-logout-btn:hover{
+background:var(--pink-strong);
+color:white;
+}
+
+@media(max-width:768px){
+.app-navbar{
+flex-direction:column;
+gap:12px;
+padding:14px 6%;
+}
+}

@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
-from decouple import config
+from decouple import Config,RepositoryEnv 
+from datetime import timedelta
+SIMPLE_JWT={
+    "ACCESS_TOKEN_LIFETIME":timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME":timedelta(days=7)
+}
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+config=Config(RepositoryEnv(BASE_DIR/".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -26,9 +30,7 @@ SECRET_KEY = 'django-insecure-e#4mlyv446g5zp$gx=5zf620sjn$z@-mz@%l2+-lvo_ulkoy_u
 DEBUG = True
 
 ALLOWED_HOSTS = []
-from dotenv import load_dotenv
 import os
-load_dotenv()
 
 # Application definition
 
@@ -57,6 +59,7 @@ REST_FRAMEWORK = {
     )
 }
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -64,8 +67,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -147,3 +148,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #    "http://localhost:5173/"
 # ]
 AUTH_USER_MODEL="users.User"
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

@@ -1,0 +1,248 @@
+/* CreateInterview.css */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+--bg:#FFF7F5;
+--surface:#FFFFFF;
+--pink-soft:#FBE0E6;
+--pink-mid:#F3A9BC;
+--pink-strong:#E4638A;
+--ink:#2B2230;
+--ink-soft:#8A7B82;
+--line:#F3DCE1;
+}
+
+*{box-sizing:border-box;}
+
+.create-page{
+position:relative;
+min-height:100vh;
+background:var(--bg);
+overflow-x:hidden;
+font-family:'Inter',sans-serif;
+}
+
+.create-blob{
+position:absolute;
+border-radius:50%;
+pointer-events:none;
+z-index:0;
+}
+
+.create-blob-1{
+width:380px;
+height:380px;
+background:var(--pink-soft);
+top:-140px;
+right:-140px;
+opacity:.55;
+}
+
+.create-wrap{
+position:relative;
+z-index:1;
+max-width:720px;
+margin:0 auto;
+padding:52px 24px 90px;
+}
+
+.tag{
+display:inline-block;
+padding:7px 16px;
+background:var(--pink-soft);
+color:var(--pink-strong);
+border-radius:30px;
+font-size:12px;
+font-weight:700;
+margin-bottom:16px;
+}
+
+.create-heading{
+text-align:center;
+margin-bottom:34px;
+}
+
+.create-heading h1{
+font-family:'Fraunces',serif;
+font-weight:600;
+font-size:32px;
+color:var(--ink);
+margin-bottom:10px;
+}
+
+.create-heading p{
+color:var(--ink-soft);
+font-size:15px;
+}
+
+.create-card{
+background:var(--surface);
+border:1px solid var(--line);
+border-radius:24px;
+padding:36px 34px;
+display:flex;
+flex-direction:column;
+box-shadow:0 24px 50px rgba(196,120,145,.1);
+}
+
+.create-card label{
+font-size:13px;
+font-weight:700;
+color:var(--ink);
+margin-bottom:10px;
+margin-top:22px;
+}
+
+.create-card label:first-of-type{
+margin-top:0;
+}
+
+.create-card input[type="text"],
+.create-card input[type="number"]{
+padding:13px 16px;
+border-radius:12px;
+border:1.5px solid var(--line);
+background:var(--bg);
+font-size:14px;
+color:var(--ink);
+outline:none;
+transition:.25s;
+font-family:'Inter',sans-serif;
+}
+
+.create-card input:focus{
+border-color:var(--pink-strong);
+background:var(--surface);
+}
+
+.option-grid{
+display:grid;
+gap:10px;
+}
+
+.option-grid-3{
+grid-template-columns:repeat(3,1fr);
+}
+
+.option-grid-4{
+grid-template-columns:repeat(4,1fr);
+}
+
+.option-card{
+background:var(--bg);
+border:1.5px solid var(--line);
+border-radius:14px;
+padding:16px 14px;
+display:flex;
+flex-direction:column;
+gap:4px;
+text-align:left;
+cursor:pointer;
+transition:.2s;
+font-family:'Inter',sans-serif;
+}
+
+.option-card strong{
+font-size:14px;
+color:var(--ink);
+}
+
+.option-card small{
+font-size:11.5px;
+color:var(--ink-soft);
+line-height:1.4;
+}
+
+.option-card:hover{
+border-color:var(--pink-mid);
+}
+
+.option-card.selected{
+border-color:var(--pink-strong);
+background:var(--pink-soft);
+}
+
+.option-card.selected strong{
+color:var(--pink-strong);
+}
+
+.option-pill{
+background:var(--bg);
+border:1.5px solid var(--line);
+border-radius:30px;
+padding:11px 10px;
+text-align:center;
+font-size:13px;
+font-weight:600;
+color:var(--ink);
+cursor:pointer;
+transition:.2s;
+font-family:'Inter',sans-serif;
+}
+
+.option-pill:hover{
+border-color:var(--pink-mid);
+}
+
+.option-pill.selected{
+border-color:var(--pink-strong);
+background:var(--pink-strong);
+color:white;
+}
+
+.create-error{
+margin-top:18px;
+color:#C6415F;
+background:#FDE7EC;
+border-radius:10px;
+padding:10px 14px;
+font-size:13px;
+}
+
+.create-submit{
+margin-top:30px;
+padding:15px;
+border:none;
+border-radius:40px;
+background:var(--pink-strong);
+color:white;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+box-shadow:0 12px 26px rgba(228,99,138,.28);
+font-family:'Inter',sans-serif;
+}
+
+.create-submit:hover{
+transform:translateY(-2px);
+}
+
+.create-submit:disabled{
+opacity:.65;
+cursor:not-allowed;
+transform:none;
+}
+
+.create-cancel{
+margin-top:16px;
+text-align:center;
+color:var(--ink-soft);
+text-decoration:none;
+font-size:13px;
+font-weight:600;
+}
+
+.create-cancel:hover{
+color:var(--pink-strong);
+}
+
+@media(max-width:560px){
+.option-grid-3,
+.option-grid-4{
+grid-template-columns:repeat(2,1fr);
+}
+.create-card{
+padding:28px 22px;
+}
+}
