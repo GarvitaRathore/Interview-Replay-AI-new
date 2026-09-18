@@ -101,13 +101,18 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("DB_NAME"),
-        'USER':config("DB_USER"),
-        'PASSWORD':config("DB_PASSWORD"),
-        'HOST':config("DB_HOST"),
-        'PORT':config("DB_PORT"),
+        'NAME': config("DB_NAME", default=""),
+        'USER':config("DB_USER", default=""),
+        'PASSWORD':config("DB_PASSWORD", default=""),
+        'HOST':config("DB_HOST", default=""),
+        'PORT':config("DB_PORT", default=""),
     }
 }
+DATABASE_URL = config("DATABASE_URL", default=None)
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=600, ssl_require=True)
+    }
 
 
 # Password validation
