@@ -2,6 +2,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import AppNavbar from "../components/AppNavbar";
+import ProctorSetup from "../components/ProctorSetup";
+import ProctorWarning from "../components/ProctorWarning";
+import ProctorMonitor from "../components/ProctorMonitor";
+import { useProctoring } from "../hooks/useProctoring";
 import { getInterviewQuestions, submitAnswer } from "../api/interviews";
 import "./Interview.css";
 
@@ -9,11 +13,29 @@ const SpeechRecognitionAPI =
   typeof window !== "undefined" &&
   (window.SpeechRecognition || window.webkitSpeechRecognition);
 
+function LockedNavbar() {
+  return (
+    <nav className="app-navbar">
+      <div className="app-logo">
+        <div className="logo-circle">IR</div>
+        <div>
+          <h2>Interview Replay</h2>
+          <p>Test in progress</p>
+        </div>
+      </div>
+      <div className="app-nav-links">
+        <span style={{ color: "#8A7B82", fontSize: 14 }}>
+          Navigation is disabled during the test
+        </span>
+      </div>
+    </nav>
+  );
+}
 function Interview() {
   const { id } = useParams();
   const navigate = useNavigate();
   const recognitionRef = useRef(null);
-
+  const shouldListenRef = useRef(false);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -23,7 +45,9 @@ function Interview() {
   const [submitError, setSubmitError] = useState("");
   const [liveTranscript, setLiveTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-
+  const [verified, setVerified] = useState(false);
+  const { warning, terminated, dismissWarning ,report} = useProctoring(id, verified);
+  const [referencePhotoUrl, setReferencePhotoUrl] = useState(null);
   useEffect(() => {
     getInterviewQuestions(id)
       .then((res) => {
@@ -70,7 +94,8 @@ function Interview() {
       setLiveTranscript("");
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
       setIsRecording(false);
       setLiveTranscript("");
     };
@@ -84,13 +109,21 @@ function Interview() {
 
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
+    console.log("toggle clicked, isRecording:", isRecording);
 
     if (isRecording) {
+      shouldListenRef.current = false;
       recognitionRef.current.stop();
       setIsRecording(false);
     } else {
+      shouldListenRef.current = true;
+      try{
       recognitionRef.current.start();
       setIsRecording(true);
+      }
+      catch (err) {
+        console.error("recognition.start() failed:", err);
+      }
     }
   };
 
@@ -155,7 +188,34 @@ function Interview() {
       </div>
     );
   }
-
+  if (!verified) {
+    return (
+      <div className="interview-page">
+        <AppNavbar />
+        <div className="interview-wrap">
+          <ProctorSetup
+            interviewId={id}
+            onVerified={(photoUrl) => {
+              setReferencePhotoUrl(photoUrl);
+              setVerified(true);
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+if (terminated) {
+    return (
+      <div className="interview-page">
+        <AppNavbar />
+        <div className="interview-status">
+          <p>This interview was terminated due to repeated policy violations.</p>
+          <Link to="/dashboard" className="interview-back-link">Back to dashboard</Link>
+        </div>
+      </div>
+    );
+  }
+ 
   if (loadError) {
     return (
       <div className="interview-page">
@@ -182,8 +242,10 @@ function Interview() {
 
   return (
     <div className="interview-page">
-      <AppNavbar />
-
+      
+      <LockedNavbar />
+      <ProctorWarning warning={warning} onDismiss={dismissWarning} />
+      <ProctorMonitor interviewId={id}active={verified && !terminated}report={report}referencePhotoUrl={referencePhotoUrl} showPreview={true}/>
       <div className="interview-wrap">
 
         <div className="interview-progress-row">

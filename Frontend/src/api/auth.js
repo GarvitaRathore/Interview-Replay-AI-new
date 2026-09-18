@@ -8,3 +8,8 @@ export const registerUser = (data) => apiClient.post("/users/register/", data);
 // expects: { username, password }
 // returns: { access, refresh }
 export const loginUser = (data) => apiClient.post("/users/login/", data);
+export const verifyOtp = (username, otp) =>
+  apiClient.post("/users/verify-otp/", { username, otp });
+
+export const resendOtp = (username) =>
+  apiClient.post("/users/resend-otp/", { username });

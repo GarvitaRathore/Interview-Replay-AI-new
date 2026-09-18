@@ -20,3 +20,13 @@ export const getInterviewResults = (interviewId) =>
   apiClient.get(`/interviews/results/${interviewId}/`);
 
 export const getMyInterviews = () => apiClient.get("/interviews/");
+export const uploadReferencePhoto = (interviewId, photoBlob) => {
+  const formData = new FormData();
+  formData.append("photo", photoBlob, "reference.jpg");
+  return apiClient.post(`/interviews/upload-photo/${interviewId}/`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const reportViolation = (interviewId, eventType, meta = {}) =>
+  apiClient.post(`/interviews/violation/${interviewId}/`, { event_type: eventType, meta });

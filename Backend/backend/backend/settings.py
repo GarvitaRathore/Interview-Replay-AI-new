@@ -24,12 +24,12 @@ config=Config(RepositoryEnv(BASE_DIR/".env"))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e#4mlyv446g5zp$gx=5zf620sjn$z@-mz@%l2+-lvo_ulkoy_u'
+SECRET_KEY = config("SK")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 import os
 
 # Application definition
@@ -151,3 +151,18 @@ AUTH_USER_MODEL="users.User"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
+# FRONTEND_URL = "http://localhost:5173"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# backend/settings.py — add at the bottom
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# reference photos are small but let's not let anyone upload a huge file
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024

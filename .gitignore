@@ -8,3 +8,4 @@ __pychache__/
 .env
 **/.env
 db.sqlite3
+Backend/backend/media/

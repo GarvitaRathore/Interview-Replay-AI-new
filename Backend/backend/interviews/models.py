@@ -30,6 +30,10 @@ class InterviewSession(models.Model):
     status=models.CharField(max_length=20,choices=status_types,default="PENDING")
     topic=models.CharField(max_length=100,blank=True)
     number_of_questions=models.PositiveIntegerField()
+    reference_photo = models.ImageField(upload_to="reference_photos/", null=True, blank=True)
+    is_terminated = models.BooleanField(default=False)
+    termination_reason = models.CharField(max_length=100, blank=True)
+    warning_count = models.PositiveIntegerField(default=0)
     created_at=models.DateField(auto_now_add=True)
 class Question(models.Model):
     interview=models.ForeignKey(InterviewSession,on_delete=models.CASCADE,related_name="questions")
@@ -50,3 +54,17 @@ class UserAnswer(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Answer to the Question {self.question.question_order}"
+class ProctoringEvent(models.Model):
+    EVENT_TYPES = [
+        ("TAB_SWITCH", "Tab Switch"),
+        ("NO_FACE", "No Face Detected"),
+        ("MULTIPLE_FACES", "Multiple Faces Detected"),
+        ("DEVICE_DETECTED", "Electronic Device Detected"),
+        ("FACE_MISMATCH", "Face Mismatch"),
+        ("FULLSCREEN_EXIT", "Exited Fullscreen"),
+        ("LOW_GAZE", "Looking Away"),
+    ]
+    interview = models.ForeignKey(InterviewSession, on_delete=models.CASCADE, related_name="events")
+    event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
+    meta = models.JSONField(blank=True, default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)

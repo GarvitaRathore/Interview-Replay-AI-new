@@ -1,7 +1,7 @@
 // Register.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../api/auth";
+import { registerUser, verifyOtp, resendOtp } from "../api/auth";
 import "./Auth.css";
 
 function parseApiError(err) {
@@ -38,6 +38,11 @@ function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [awaitingOtp, setAwaitingOtp] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [verifying, setVerifying] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,11 +64,38 @@ function Register() {
         linkedin,
       });
 
-      navigate("/login"); // account created — send them to log in
+      setAwaitingOtp(true); // account created — show the OTP form instead of navigating
     } catch (err) {
       setError(parseApiError(err));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setOtpError("");
+    setVerifying(true);
+
+    try {
+      const res = await verifyOtp(username, otp);
+      localStorage.setItem("access", res.data.access);
+      localStorage.setItem("refresh", res.data.refresh);
+      navigate("/dashboard");
+    } catch (err) {
+      setOtpError(parseApiError(err));
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setOtpError("");
+    try {
+      await resendOtp(username);
+      setOtpError("A new code has been sent.");
+    } catch (err) {
+      setOtpError(parseApiError(err));
     }
   };
 
@@ -102,98 +134,130 @@ function Register() {
 
         <div className="auth-card">
 
-          <h2>Create your account</h2>
-          <p className="auth-sub">Start practicing in less than a minute.</p>
+          {!awaitingOtp ? (
+            <>
+              <h2>Create your account</h2>
+              <p className="auth-sub">Start practicing in less than a minute.</p>
 
-          <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit}>
 
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              placeholder="your_username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+                <label htmlFor="username">Username</label>
+                <input
+                  id="username"
+                  type="text"
+                  placeholder="your_username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
 
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
 
-            <label htmlFor="password">Password</label>
-            <div className="password-field">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-visibility"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
+                <label htmlFor="password">Password</label>
+                <div className="password-field">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="toggle-visibility"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
 
-            <label htmlFor="confirmPassword">Confirm password</label>
-            <input
-              id="confirmPassword"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+                <label htmlFor="confirmPassword">Confirm password</label>
+                <input
+                  id="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
 
-            <label htmlFor="targetRole">Target role <span className="optional-tag">optional</span></label>
-            <input
-              id="targetRole"
-              type="text"
-              placeholder="e.g. Frontend Developer"
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-            />
+                <label htmlFor="targetRole">Target role <span className="optional-tag">optional</span></label>
+                <input
+                  id="targetRole"
+                  type="text"
+                  placeholder="e.g. Frontend Developer"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                />
 
-            <label htmlFor="github">GitHub <span className="optional-tag">optional</span></label>
-            <input
-              id="github"
-              type="url"
-              placeholder="https://github.com/yourusername"
-              value={github}
-              onChange={(e) => setGithub(e.target.value)}
-            />
+                <label htmlFor="github">GitHub <span className="optional-tag">optional</span></label>
+                <input
+                  id="github"
+                  type="url"
+                  placeholder="https://github.com/yourusername"
+                  value={github}
+                  onChange={(e) => setGithub(e.target.value)}
+                />
 
-            <label htmlFor="linkedin">LinkedIn <span className="optional-tag">optional</span></label>
-            <input
-              id="linkedin"
-              type="url"
-              placeholder="https://linkedin.com/in/yourusername"
-              value={linkedin}
-              onChange={(e) => setLinkedin(e.target.value)}
-            />
+                <label htmlFor="linkedin">LinkedIn <span className="optional-tag">optional</span></label>
+                <input
+                  id="linkedin"
+                  type="url"
+                  placeholder="https://linkedin.com/in/yourusername"
+                  value={linkedin}
+                  onChange={(e) => setLinkedin(e.target.value)}
+                />
 
-            {error && <p className="auth-error">{error}</p>}
+                {error && <p className="auth-error">{error}</p>}
 
-            <button type="submit" className="auth-submit" disabled={loading}>
-              {loading ? "Creating account..." : "Register"}
-            </button>
+                <button type="submit" className="auth-submit" disabled={loading}>
+                  {loading ? "Creating account..." : "Register"}
+                </button>
 
-          </form>
+              </form>
 
-          <p className="auth-switch">
-            Already have an account? <Link to="/login">Login</Link>
-          </p>
+              <p className="auth-switch">
+                Already have an account? <Link to="/login">Login</Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <h2>Enter verification code</h2>
+              <p className="auth-sub">We sent a 6-digit code to {email}.</p>
+
+              <form onSubmit={handleVerifyOtp}>
+                <label htmlFor="otp">Verification Code</label>
+                <input
+                  id="otp"
+                  type="text"
+                  maxLength={6}
+                  placeholder="123456"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                />
+
+                {otpError && <p className="auth-error">{otpError}</p>}
+
+                <button type="submit" className="auth-submit" disabled={verifying}>
+                  {verifying ? "Verifying..." : "Verify & Continue"}
+                </button>
+              </form>
+
+              <p className="auth-switch">
+                Didn't get a code? <a href="#resend" onClick={handleResendOtp}>Resend code</a>
+              </p>
+            </>
+          )}
 
         </div>
 
