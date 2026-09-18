@@ -18,8 +18,14 @@ SIMPLE_JWT={
 }
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-config=Config(RepositoryEnv(BASE_DIR/".env"))
+from decouple import Config, RepositoryEnv, AutoConfig
+import os
 
+env_path = BASE_DIR / ".env"
+if env_path.exists():
+    config = Config(RepositoryEnv(env_path))
+else:
+    config = AutoConfig()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
