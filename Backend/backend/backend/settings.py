@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import Config,RepositoryEnv 
 from datetime import timedelta
+import dj_database_url
 SIMPLE_JWT={
     "ACCESS_TOKEN_LIFETIME":timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME":timedelta(days=7)
