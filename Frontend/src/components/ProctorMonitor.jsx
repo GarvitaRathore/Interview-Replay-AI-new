@@ -171,7 +171,7 @@ function ProctorMonitor({ interviewId, active, report, referencePhotoUrl, showPr
         muted
         style={
           showPreview
-            ? { width: 160, borderRadius: 8, position: "fixed", bottom: 16, right: 16, zIndex: 999 }
+            ? { width: 160, borderRadius: 8, position: "fixed", bottom: 16, left: 16, zIndex: 999 }
             : { display: "none" }
         }
       />
