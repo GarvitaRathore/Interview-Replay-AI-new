@@ -15,7 +15,7 @@ from decouple import config
 def send_otp_email(user, otp):
     resend.api_key = config("RESEND_API_KEY")
     resend.Emails.send({
-        "from": "onboarding@resend.dev",  # Resend's default sender for free tier testing
+        "from": "Interview Replay AI <onboarding@resend.dev>",  # Resend's default sender for free tier testing
         "to": user.email,
         "subject": "Your Interview Replay AI verification code",
         "text": f"Hi {user.username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
