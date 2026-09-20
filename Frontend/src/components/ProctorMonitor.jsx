@@ -9,7 +9,7 @@ const SUSPICIOUS_OBJECTS = ["cell phone", "laptop", "book", "remote", "tablet"];
 const MATCH_DISTANCE_THRESHOLD = 0.5; // lower = stricter match
 
 // backend serves media on a different origin than the Vite dev server
-const BACKEND_ORIGIN = "http://localhost:8000";
+const BACKEND_ORIGIN = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://localhost:8000";
 
 function ProctorMonitor({ interviewId, active, report, referencePhotoUrl, showPreview = false }) {
   const videoRef = useRef(null);

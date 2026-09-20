@@ -17,7 +17,7 @@ function ProctorSetup({ interviewId, onVerified }) {
     let cancelled = false;
 
     navigator.mediaDevices
-      .getUserMedia({ video: { width: 480, height: 360 }, audio: false })
+      .getUserMedia({ video: { width: 480, height: 360 }, audio: true })
       .then((stream) => {
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
