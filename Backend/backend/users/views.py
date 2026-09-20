@@ -28,7 +28,10 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             otp = user.generate_otp()
-            send_otp_email(user, otp)
+            try:
+                send_otp_email(user, otp)
+            except Exception as e:
+                print("OTP email failed to send:", e)
             return Response(
                 {"message": "Registered. Check your email for a verification code.", "username": user.username},
                 status=status.HTTP_201_CREATED
@@ -102,5 +105,8 @@ class ResendOTPView(APIView):
             return Response({"message": "Already verified"}, status=status.HTTP_200_OK)
 
         otp = user.generate_otp()
-        send_otp_email(user, otp)
+        try:
+            send_otp_email(user, otp)
+        except Exception as e:
+            print("OTP email failed to send:", e)
         return Response({"message": "New code sent"}, status=status.HTTP_200_OK)
