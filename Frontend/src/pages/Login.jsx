@@ -135,8 +135,6 @@ function Login() {
                 <input type="checkbox" />
                 Remember me
               </label>
-
-              <a href="#forgot" className="forgot-link">Forgot password?</a>
             </div>
 
             {error && <p className="auth-error">{error}</p>}
