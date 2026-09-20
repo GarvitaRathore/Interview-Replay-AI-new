@@ -10,15 +10,16 @@ from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import User
-
-
+import resend
+from decouple import config
 def send_otp_email(user, otp):
-    send_mail(
-        subject="Your Interview Replay AI verification code",
-        message=f"Hi {user.username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email],
-    )
+    resend.api_key = config("RESEND_API_KEY")
+    resend.Emails.send({
+        "from": "onboarding@resend.dev",  # Resend's default sender for free tier testing
+        "to": user.email,
+        "subject": "Your Interview Replay AI verification code",
+        "text": f"Hi {user.username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
+    })
 
 
 class RegisterView(APIView):
