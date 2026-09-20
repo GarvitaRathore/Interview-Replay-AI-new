@@ -10,16 +10,25 @@ from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import User
-import resend
+import requests
 from decouple import config
 def send_otp_email(user, otp):
-    resend.api_key = config("RESEND_API_KEY")
-    resend.Emails.send({
-        "from": "Interview Replay AI <onboarding@resend.dev>",  # Resend's default sender for free tier testing
-        "to": user.email,
-        "subject": "Your Interview Replay AI verification code",
-        "text": f"Hi {user.username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
-    })
+    response = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "accept": "application/json",
+            "api-key": config("BREVO_API_KEY"),
+            "content-type": "application/json",
+        },
+        json={
+            "sender": {"name": "Interview Replay AI", "email": "garvitasinghrathore06@gmail.com"},
+            "to": [{"email": user.email}],
+            "subject": "Your Interview Replay AI verification code",
+            "textContent": f"Hi {user.username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
+        },
+        timeout=10,
+    )
+    response.raise_for_status()
 
 
 class RegisterView(APIView):
